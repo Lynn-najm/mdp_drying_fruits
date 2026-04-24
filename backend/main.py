@@ -3,10 +3,24 @@ from pydantic import BaseModel
 from datetime import datetime
 from sqlalchemy.orm import Session
 
+from fastapi.responses import StreamingResponse
+import csv
+import io
+
 from database import SessionLocal, engine
 from models import Base, ReadingDB, SettingsDB, AlertDB
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 Base.metadata.create_all(bind=engine)
 
@@ -176,3 +190,29 @@ def enable_auto_mode(db: Session = Depends(get_db)):
 @app.get("/api/alerts")
 def get_alerts(db: Session = Depends(get_db)):
     return db.query(AlertDB).order_by(AlertDB.id.desc()).all()
+
+@app.get("/api/export/csv")
+def export_csv(db: Session = Depends(get_db)):
+    readings = db.query(ReadingDB).all()
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    writer.writerow(["id", "temperature", "humidity", "fan_on", "timestamp"])
+
+    for r in readings:
+        writer.writerow([
+            r.id,
+            r.temperature,
+            r.humidity,
+            r.fan_on,
+            r.timestamp
+        ])
+
+    output.seek(0)
+
+    return StreamingResponse(
+        output,
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=readings.csv"}
+    )
