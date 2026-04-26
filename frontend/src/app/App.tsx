@@ -62,6 +62,15 @@ export default function App() {
   const [experiments, setExperiments] = useState<any[]>([]);
   const [selectedExperiment, setSelectedExperiment] = useState<string>("");
 
+  const SENSOR_TIMEOUT_MS = 2 * 60 * 1000; // 2 minutes
+
+  const isSensorActive =
+    latest?.timestamp &&
+    Date.now() - new Date(latest.timestamp).getTime() < SENSOR_TIMEOUT_MS;
+
+  const systemStatus = isSensorActive ? "System Online" : "Waiting for ESP data";
+
+
   const fetchBackendData = async () => {
     try {
       const [latestRes, readingsRes, alertsRes, settingsRes, experimentRes, experimentsRes] = await Promise.all([
@@ -87,6 +96,8 @@ export default function App() {
       console.error("Failed to fetch backend data:", error);
     }
   };
+
+
 
   useEffect(() => {
     fetchBackendData();
@@ -258,6 +269,7 @@ const exportSelectedExperimentCsv = () => {
         activeView={activeView}
         onViewChange={setActiveView}
         alertCount={alerts.length}
+        latest={latest}
       />
 
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -267,8 +279,12 @@ const exportSelectedExperimentCsv = () => {
               Solar Air Heater Dashboard
             </h1>
             <div className="mt-1 flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-500"></div>
-              <span className="text-sm text-gray-600">System Online</span>
+              <div
+                className={`h-2 w-2 rounded-full ${
+                isSensorActive ? "bg-green-500" : "bg-gray-400"
+                  }`}
+                  />
+              <span className="text-sm text-gray-600">{systemStatus}</span>
             </div>
           </div>
 
