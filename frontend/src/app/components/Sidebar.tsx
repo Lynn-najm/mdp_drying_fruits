@@ -22,7 +22,7 @@ export function Sidebar({ activeView, onViewChange, alertCount, latest }: Sideba
 
       const isSensorActive =
         latest?.timestamp &&
-        Date.now() - new Date(latest.timestamp).getTime() < SENSOR_TIMEOUT_MS;
+        Date.now() - new Date(latest.timestamp + "Z").getTime() < SENSOR_TIMEOUT_MS;
 
   return (
     <div className="flex h-full w-64 flex-col bg-gray-900 text-white">

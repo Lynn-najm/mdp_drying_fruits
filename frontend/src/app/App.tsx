@@ -66,7 +66,7 @@ export default function App() {
 
   const isSensorActive =
     latest?.timestamp &&
-    Date.now() - new Date(latest.timestamp).getTime() < SENSOR_TIMEOUT_MS;
+    Date.now() - new Date(latest.timestamp + "Z").getTime() < SENSOR_TIMEOUT_MS;
 
   const systemStatus = isSensorActive ? "System Online" : "Waiting for ESP data";
 
