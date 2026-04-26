@@ -12,7 +12,7 @@ import { AlertsPanel } from "./components/AlertsPanel";
 import { RealTimeChart } from "./components/RealTimeChart";
 import { ReadingsTable } from "./components/ReadingsTable";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://mdp-drying-fruits-api.onrender.com";
 
 type Reading = {
   id: number;
