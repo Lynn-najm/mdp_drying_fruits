@@ -1,6 +1,8 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, Float, Boolean, String, DateTime
-from datetime import datetime, timezone
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
 
 class ReadingDB(Base):
     __tablename__ = "readings"
