@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, Float, Boolean, String
+from datetime import datetime
+from sqlalchemy import Column, Integer, Float, Boolean, String, DateTime
 from database import Base
 
 class ReadingDB(Base):
@@ -19,8 +20,9 @@ class ReadingDB(Base):
 
     control_mode = Column(String)  # "auto" or "manual"
 
-    timestamp = Column(String)
+    timestamp = Column(DateTime, default=datetime.utcnow)
     experiment_id = Column(Integer, nullable=True)
+
 
 
 class SettingsDB(Base):
