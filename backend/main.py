@@ -149,7 +149,6 @@ def create_reading(r: Reading, db: Session = Depends(get_db)):
         fan1_on=fan1_state,
         fan2_on=fan2_state,
         control_mode="manual" if settings.manual_mode else "auto",
-        timestamp=now(),
         experiment_id=running_experiment.id if running_experiment else None,
     )
 
@@ -219,7 +218,6 @@ def update_settings(data: dict, db: Session = Depends(get_db)):
                 fan1_on=fan1_state,
                 fan2_on=fan2_state,
                 control_mode="manual" if settings.manual_mode else "auto",
-                timestamp=now(),
                 experiment_id=running_experiment.id if running_experiment else None,
             )
         )
@@ -251,7 +249,6 @@ def control_fan1(state: bool, db: Session = Depends(get_db)):
                 fan1_on=state,
                 fan2_on=latest.fan2_on,
                 control_mode="manual",
-                timestamp=now(),
                 experiment_id=running_experiment.id if running_experiment else None,
             )
         )
@@ -281,7 +278,6 @@ def control_fan2(state: bool, db: Session = Depends(get_db)):
                 fan1_on=latest.fan1_on,
                 fan2_on=state,
                 control_mode="manual",
-                timestamp=now(),
                 experiment_id=running_experiment.id if running_experiment else None,
             )
         )
@@ -313,7 +309,6 @@ def enable_auto_mode(db: Session = Depends(get_db)):
                 fan1_on=fan1_state,
                 fan2_on=fan2_state,
                 control_mode="auto",
-                timestamp=now(),
                 experiment_id=running_experiment.id if running_experiment else None,
             )
         )
