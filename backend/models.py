@@ -20,7 +20,7 @@ class ReadingDB(Base):
 
     control_mode = Column(String)  # "auto" or "manual"
 
-    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=datetime.utcnow)
     experiment_id = Column(Integer, nullable=True)
 
 
@@ -46,7 +46,7 @@ class AlertDB(Base):
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String)
     message = Column(String)
-    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    timestamp = Column(DateTime, default=datetime.utcnow)
 
 
 class ExperimentDB(Base):
