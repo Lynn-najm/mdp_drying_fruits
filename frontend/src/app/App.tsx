@@ -245,7 +245,7 @@ const handleStopExperiment = async () => {
 
 
 const exportAllCsv = () => {
-  window.open(`${API_URL}/api/export/csv`, "_blank");
+  window.open(`${API_URL}/api/export/csv/experiment/${experiment.id}`, "_blank");
 };
 
 

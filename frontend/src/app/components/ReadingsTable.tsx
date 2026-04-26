@@ -52,7 +52,12 @@ export function ReadingsTable({ readings }: ReadingsTableProps) {
               <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="px-4 py-3 text-gray-600">{r.id}</td>
                 <td className="px-4 py-3 text-gray-600">
-                  {new Date(r.timestamp).toLocaleTimeString()}
+                  {new Date(r.timestamp).toLocaleTimeString("en-LB", {
+                      timeZone: "Asia/Beirut",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                  })}
                 </td>
 
                 <td className="px-4 py-3">{r.inlet_temperature}</td>
