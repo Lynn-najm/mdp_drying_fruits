@@ -100,20 +100,31 @@ def compute_fan_states(r: Reading, settings: SettingsDB):
 
 
 def create_alerts_if_needed(r: Reading, settings: SettingsDB, db: Session):
-    timestamp = now()
     temp = control_temperature(r)
 
     if r.humidity > settings.humidity_max:
-        db.add(AlertDB(type="humidity_high", message=f"Humidity too high: {r.humidity}%", timestamp=timestamp))
+        db.add(AlertDB(
+            type="humidity_high",
+            message=f"Humidity too high: {r.humidity}%"
+        ))
 
     if r.humidity < settings.humidity_min:
-        db.add(AlertDB(type="humidity_low", message=f"Humidity too low: {r.humidity}%", timestamp=timestamp))
+        db.add(AlertDB(
+            type="humidity_low",
+            message=f"Humidity too low: {r.humidity}%"
+        ))
 
     if temp > settings.temp_max:
-        db.add(AlertDB(type="temperature_high", message=f"Temperature too high: {temp}°C", timestamp=timestamp))
+        db.add(AlertDB(
+            type="temperature_high",
+            message=f"Temperature too high: {temp}°C"
+        ))
 
     if temp < settings.temp_min:
-        db.add(AlertDB(type="temperature_low", message=f"Temperature too low: {temp}°C", timestamp=timestamp))
+        db.add(AlertDB(
+            type="temperature_low",
+            message=f"Temperature too low: {temp}°C"
+        ))
 
 
 def get_running_experiment(db: Session):
