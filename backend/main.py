@@ -85,18 +85,14 @@ def compute_fan_states(r: Reading, settings: SettingsDB):
     if settings.manual_mode:
         return settings.forced_fan1_on, settings.forced_fan2_on
 
-    temp = control_temperature(r)
+    fan1_on = (
+        r.outlet_temperature > settings.temp_max
+        or r.humidity > settings.humidity_max
+    )
 
-    if temp > settings.temp_max or r.humidity > settings.humidity_max:
-        return True, True
+    fan2_on = False  # fan2 is NEVER automatic
 
-    temp_safe = temp < settings.temp_max - 5
-    humidity_safe = r.humidity < settings.humidity_max - 10
-
-    if temp_safe and humidity_safe:
-        return False, False
-
-    return r.fan1_on, r.fan2_on
+    return fan1_on, fan2_on
 
 
 def create_alerts_if_needed(r: Reading, settings: SettingsDB, db: Session):
@@ -244,6 +240,7 @@ def control_fan1(state: bool, db: Session = Depends(get_db)):
     settings = db.query(SettingsDB).first()
     settings.manual_mode = True
     settings.forced_fan1_on = state
+    settings.forced_fan2_on = False
 
     latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
     running_experiment = get_running_experiment(db)
@@ -273,6 +270,7 @@ def control_fan2(state: bool, db: Session = Depends(get_db)):
     settings = db.query(SettingsDB).first()
     settings.manual_mode = True
     settings.forced_fan2_on = state
+    settings.forced_fan1_on = False
 
     latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
     running_experiment = get_running_experiment(db)
@@ -436,9 +434,9 @@ def export_csv(db: Session = Depends(get_db)):
         headers={"Content-Disposition": "attachment; filename=readings.csv"},
     )
 
-@app.get("/api/export/csv/experiment/{test_id}")
-def export_experiment_csv(test_id: str, db: Session = Depends(get_db)):
-    experiment = db.query(ExperimentDB).filter(ExperimentDB.test_id == test_id).first()
+@app.get("/api/export/csv/experiment/{experiment_id}")
+def export_experiment_csv(experiment_id: int, db: Session = Depends(get_db)):
+    experiment = db.query(ExperimentDB).filter(ExperimentDB.id == experiment_id).first()
 
     if not experiment:
         return {"status": "error", "message": "Experiment not found"}
@@ -488,10 +486,12 @@ def export_experiment_csv(test_id: str, db: Session = Depends(get_db)):
 
     output.seek(0)
 
+
+    safe_name = experiment.test_id.replace("/", "-").replace("\\", "-")
     return StreamingResponse(
         output,
         media_type="text/csv",
-        headers={"Content-Disposition": f"attachment; filename={test_id}.csv"},
+        headers={"Content-Disposition": f"attachment; filename={safe_name}.csv"},
     )
 
 @app.get("/api/experiments")
