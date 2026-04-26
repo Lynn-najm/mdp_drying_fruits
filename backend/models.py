@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, Float, Boolean, String, DateTime
-from database import Base
+from datetime import datetime, timezone
 
 class ReadingDB(Base):
     __tablename__ = "readings"
@@ -20,7 +20,7 @@ class ReadingDB(Base):
 
     control_mode = Column(String)  # "auto" or "manual"
 
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     experiment_id = Column(Integer, nullable=True)
 
 
@@ -46,7 +46,7 @@ class AlertDB(Base):
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String)
     message = Column(String)
-    timestamp = Column(String)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class ExperimentDB(Base):
