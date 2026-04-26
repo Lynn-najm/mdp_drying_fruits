@@ -4,9 +4,10 @@ interface SidebarProps {
   activeView: string;
   onViewChange: (view: string) => void;
   alertCount: number;
+  latest: any;
 }
 
-export function Sidebar({ activeView, onViewChange, alertCount }: SidebarProps) {
+export function Sidebar({ activeView, onViewChange, alertCount, latest }: SidebarProps) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'readings', label: 'Readings', icon: Thermometer },
@@ -17,10 +18,16 @@ export function Sidebar({ activeView, onViewChange, alertCount }: SidebarProps) 
     { id: 'export', label: 'Export Data', icon: Download },
   ];
 
+        const SENSOR_TIMEOUT_MS = 2 * 60 * 1000;
+
+      const isSensorActive =
+        latest?.timestamp &&
+        Date.now() - new Date(latest.timestamp).getTime() < SENSOR_TIMEOUT_MS;
+
   return (
     <div className="flex h-full w-64 flex-col bg-gray-900 text-white">
       <div className="p-6">
-        <h1 className="text-xl font-bold">🔥 Drying System</h1>
+        <h1 className="text-xl font-bold">Solar Air Heater</h1>
       </div>
 
       <nav className="flex-1 space-y-1 px-3">
@@ -48,15 +55,17 @@ export function Sidebar({ activeView, onViewChange, alertCount }: SidebarProps) 
       <div className="border-t border-gray-800 p-4">
         <div className="space-y-2 text-xs text-gray-400">
           <div className="flex items-center gap-2">
-            <Database size={14} className="text-green-500" />
-            <span>Database: Connected</span>
+            <Database size={14} className={latest ? "text-green-500" : "text-gray-500"} />
+            <span>Database: {latest ? "Connected" : "No Data"}</span>
           </div>
           <div className="flex items-center gap-2">
-            <Wifi size={14} className="text-green-500" />
-            <span>Sensors: Active</span>
+            <Wifi size={14} className={isSensorActive ? "text-green-500" : "text-gray-500"} />
+             <span>Sensors: {isSensorActive ? "Active" : "Inactive"}</span>
           </div>
           <div className="mt-2 text-gray-500">
-            Last update: {new Date().toLocaleTimeString()}
+            Last update: {latest?.timestamp
+            ? new Date(latest.timestamp).toLocaleTimeString()
+            : "No data"}
           </div>
         </div>
       </div>

@@ -264,7 +264,7 @@ const exportSelectedExperimentCsv = () => {
         <header className="flex items-center justify-between border-b border-gray-200 bg-white px-8 py-4 shadow-sm">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
-              Drying System Dashboard
+              Solar Air Heater Dashboard
             </h1>
             <div className="mt-1 flex items-center gap-2">
               <div className="h-2 w-2 rounded-full bg-green-500"></div>
