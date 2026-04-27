@@ -64,7 +64,7 @@ export function Sidebar({ activeView, onViewChange, alertCount, latest }: Sideba
           </div>
           <div className="mt-2 text-gray-500">
             Last update: {latest?.timestamp
-            ? new Date(latest.timestamp).toLocaleTimeString()
+            ? new Date(latest.timestamp + "Z").toLocaleTimeString("en-LB", { timeZone: "Asia/Beirut" })
             : "No data"}
           </div>
         </div>

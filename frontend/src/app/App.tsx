@@ -136,7 +136,8 @@ const sensorData = {
 
 const chartData = useMemo(() => {
   return readings.slice(-30).map((r) => ({
-    time: new Date(r.timestamp).toLocaleTimeString([], {
+    time: new Date(r.timestamp + "Z").toLocaleTimeString("en-LB", {
+      timeZone: "Asia/Beirut",
       hour: "2-digit",
       minute: "2-digit",
     }),
@@ -220,6 +221,11 @@ const handleManualModeChange = async (manual: boolean) => {
 
   if (!testId) return;
 
+  if (testId.includes("/")) {
+    alert("Test ID cannot contain '/' — please use a different name.");
+    return;
+  }
+
   await fetch(`${API_URL}/api/experiment/start`, {
     method: "POST",
     headers: {
@@ -245,7 +251,7 @@ const handleStopExperiment = async () => {
 
 
 const exportAllCsv = () => {
-  window.open(`${API_URL}/api/export/csv/experiment/${experiment.id}`, "_blank");
+  window.open(`${API_URL}/api/export/csv`, "_blank");
 };
 
 
@@ -256,9 +262,9 @@ const exportSelectedExperimentCsv = () => {
   }
 
   window.open(
-    `${API_URL}/api/export/csv/experiment/${selectedExperiment}`,
-    "_blank"
-  );
+  `${API_URL}/api/export/csv/experiment/${selectedExperiment}`,
+  "_blank"
+);
 };
 
 
@@ -486,7 +492,7 @@ const exportSelectedExperimentCsv = () => {
                       >
                         <option value="">Select Experiment</option>
                         {experiments.map((exp) => (
-                          <option key={exp.test_id} value={exp.test_id}>
+                          <option key={exp.id} value={String(exp.id)}>
                             {exp.test_id} ({exp.status})
                           </option>
                         ))}

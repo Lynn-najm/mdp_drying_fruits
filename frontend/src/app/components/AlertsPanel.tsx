@@ -49,7 +49,17 @@ export function AlertsPanel({ alerts }: AlertsPanelProps) {
               <div className="flex-shrink-0">{getAlertIcon(alert.type)}</div>
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-800">{alert.message}</p>
-                <p className="mt-1 text-xs text-gray-500">{alert.timestamp}</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  {new Date(alert.timestamp + "Z").toLocaleString("en-LB", {
+                    timeZone: "Asia/Beirut",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  })}
+                </p>
               </div>
             </div>
           ))

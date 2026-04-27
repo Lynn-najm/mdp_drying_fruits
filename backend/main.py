@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,7 +24,7 @@ Base.metadata.create_all(bind=engine)
 
 
 def now():
-    return datetime.now().isoformat()
+    return datetime.now(timezone.utc).isoformat()
 
 
 def get_db():
