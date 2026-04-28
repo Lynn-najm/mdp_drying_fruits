@@ -207,28 +207,6 @@ def update_settings(data: dict, db: Session = Depends(get_db)):
         if hasattr(settings, key):
             setattr(settings, key, value)
 
-    latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
-    running_experiment = get_running_experiment(db)
-
-    if latest:
-        reading = reading_from_db(latest)
-        fan1_state, fan2_state = compute_fan_states(reading, settings)
-
-        db.add(
-            ReadingDB(
-                inlet_temperature=latest.inlet_temperature,
-                middle1_temperature=latest.middle1_temperature,
-                middle2_temperature=latest.middle2_temperature,
-                outlet_temperature=latest.outlet_temperature,
-                chamber_temperature=latest.chamber_temperature,
-                humidity=latest.humidity,
-                fan1_on=fan1_state,
-                fan2_on=fan2_state,
-                control_mode="manual" if settings.manual_mode else "auto",
-                experiment_id=running_experiment.id if running_experiment else None,
-            )
-        )
-
     db.commit()
     db.refresh(settings)
 
@@ -241,26 +219,6 @@ def control_fan1(state: bool, db: Session = Depends(get_db)):
     settings.manual_mode = True
     settings.forced_fan1_on = state
     settings.forced_fan2_on = False
-
-    latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
-    running_experiment = get_running_experiment(db)
-
-    if latest:
-        db.add(
-            ReadingDB(
-                inlet_temperature=latest.inlet_temperature,
-                middle1_temperature=latest.middle1_temperature,
-                middle2_temperature=latest.middle2_temperature,
-                outlet_temperature=latest.outlet_temperature,
-                chamber_temperature=latest.chamber_temperature,
-                humidity=latest.humidity,
-                fan1_on=state,
-                fan2_on=latest.fan2_on,
-                control_mode="manual",
-                experiment_id=running_experiment.id if running_experiment else None,
-            )
-        )
-
     db.commit()
     return {"manual_mode": True, "fan1_on": state}
 
@@ -271,26 +229,6 @@ def control_fan2(state: bool, db: Session = Depends(get_db)):
     settings.manual_mode = True
     settings.forced_fan2_on = state
     settings.forced_fan1_on = False
-
-    latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
-    running_experiment = get_running_experiment(db)
-
-    if latest:
-        db.add(
-            ReadingDB(
-                inlet_temperature=latest.inlet_temperature,
-                middle1_temperature=latest.middle1_temperature,
-                middle2_temperature=latest.middle2_temperature,
-                outlet_temperature=latest.outlet_temperature,
-                chamber_temperature=latest.chamber_temperature,
-                humidity=latest.humidity,
-                fan1_on=latest.fan1_on,
-                fan2_on=state,
-                control_mode="manual",
-                experiment_id=running_experiment.id if running_experiment else None,
-            )
-        )
-
     db.commit()
     return {"manual_mode": True, "fan2_on": state}
 
@@ -299,29 +237,6 @@ def control_fan2(state: bool, db: Session = Depends(get_db)):
 def enable_auto_mode(db: Session = Depends(get_db)):
     settings = db.query(SettingsDB).first()
     settings.manual_mode = False
-
-    latest = db.query(ReadingDB).order_by(ReadingDB.id.desc()).first()
-    running_experiment = get_running_experiment(db)
-
-    if latest:
-        reading = reading_from_db(latest)
-        fan1_state, fan2_state = compute_fan_states(reading, settings)
-
-        db.add(
-            ReadingDB(
-                inlet_temperature=latest.inlet_temperature,
-                middle1_temperature=latest.middle1_temperature,
-                middle2_temperature=latest.middle2_temperature,
-                outlet_temperature=latest.outlet_temperature,
-                chamber_temperature=latest.chamber_temperature,
-                humidity=latest.humidity,
-                fan1_on=fan1_state,
-                fan2_on=fan2_state,
-                control_mode="auto",
-                experiment_id=running_experiment.id if running_experiment else None,
-            )
-        )
-
     db.commit()
     db.refresh(settings)
 
