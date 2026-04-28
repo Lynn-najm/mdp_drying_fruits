@@ -218,7 +218,6 @@ def control_fan1(state: bool, db: Session = Depends(get_db)):
     settings = db.query(SettingsDB).first()
     settings.manual_mode = True
     settings.forced_fan1_on = state
-    settings.forced_fan2_on = False
     db.commit()
     return {"manual_mode": True, "fan1_on": state}
 
@@ -228,7 +227,6 @@ def control_fan2(state: bool, db: Session = Depends(get_db)):
     settings = db.query(SettingsDB).first()
     settings.manual_mode = True
     settings.forced_fan2_on = state
-    settings.forced_fan1_on = False
     db.commit()
     return {"manual_mode": True, "fan2_on": state}
 
