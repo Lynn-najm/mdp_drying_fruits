@@ -395,18 +395,10 @@ const exportSelectedExperimentCsv = () => {
                     tempMax={settings.temp_max}
                     humidMin={settings.humidity_min}
                     humidMax={settings.humidity_max}
-                    onTempMinChange={(val) =>
-                      updateSettings({ temp_min: val[0] })
-                    }
-                    onTempMaxChange={(val) =>
-                      updateSettings({ temp_max: val[0] })
-                    }
-                    onHumidMinChange={(val) =>
-                      updateSettings({ humidity_min: val[0] })
-                    }
-                    onHumidMaxChange={(val) =>
-                      updateSettings({ humidity_max: val[0] })
-                    }
+                    onTempMinChange={(val) => updateSettings({ temp_min: val })}
+                    onTempMaxChange={(val) => updateSettings({ temp_max: val })}
+                    onHumidMinChange={(val) => updateSettings({ humidity_min: val })}
+                    onHumidMaxChange={(val) => updateSettings({ humidity_max: val })}
                   />
 
                   <AlertsPanel alerts={uiAlerts} />
@@ -463,14 +455,10 @@ const exportSelectedExperimentCsv = () => {
               tempMax={settings.temp_max}
               humidMin={settings.humidity_min}
               humidMax={settings.humidity_max}
-              onTempMinChange={(val) => updateSettings({ temp_min: val[0] })}
-              onTempMaxChange={(val) => updateSettings({ temp_max: val[0] })}
-              onHumidMinChange={(val) =>
-                updateSettings({ humidity_min: val[0] })
-              }
-              onHumidMaxChange={(val) =>
-                updateSettings({ humidity_max: val[0] })
-              }
+              onTempMinChange={(val) => updateSettings({ temp_min: val })}
+              onTempMaxChange={(val) => updateSettings({ temp_max: val })}
+              onHumidMinChange={(val) => updateSettings({ humidity_min: val })}
+              onHumidMaxChange={(val) => updateSettings({ humidity_max: val })}
             />
           )}
 
