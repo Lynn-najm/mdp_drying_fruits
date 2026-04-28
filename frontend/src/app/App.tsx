@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Thermometer, Wind } from "lucide-react";
+import { Activity, Thermometer, Trash2, Wind } from "lucide-react";
 import { Sidebar } from "./components/Sidebar";
 import { SensorCard } from "./components/SensorCard";
 import { FanStatusCard } from "./components/FanStatusCard";
@@ -506,6 +506,29 @@ const exportSelectedExperimentCsv = () => {
                         </button>
 
                       </div>
+
+                      {/* DANGER ZONE */}
+                      <div className="mt-8 rounded-lg border border-red-200 bg-red-50 p-4">
+                        <p className="mb-1 text-sm font-semibold text-red-700">Danger Zone</p>
+                        <p className="mb-3 text-xs text-red-600">
+                          Permanently deletes all readings, alerts, and experiments. Settings are kept. This cannot be undone.
+                        </p>
+                        <button
+                          onClick={async () => {
+                            const first = window.confirm("Delete ALL readings, alerts, and experiments from the database?");
+                            if (!first) return;
+                            const second = window.confirm("Are you sure? This cannot be undone.");
+                            if (!second) return;
+                            await fetch(`${API_URL}/api/reset`, { method: "DELETE" });
+                            await fetchBackendData();
+                          }}
+                          className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-red-700"
+                        >
+                          <Trash2 size={16} />
+                          Clear All Data
+                        </button>
+                      </div>
+
                     </div>
                   )}
         </main>

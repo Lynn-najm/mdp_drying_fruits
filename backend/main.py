@@ -407,6 +407,15 @@ def export_experiment_csv(experiment_id: int, db: Session = Depends(get_db)):
         headers={"Content-Disposition": f"attachment; filename={safe_name}.csv"},
     )
 
+@app.delete("/api/reset")
+def reset_database(db: Session = Depends(get_db)):
+    db.query(ReadingDB).delete()
+    db.query(AlertDB).delete()
+    db.query(ExperimentDB).delete()
+    db.commit()
+    return {"status": "ok", "message": "All readings, alerts, and experiments deleted."}
+
+
 @app.get("/api/experiments")
 def get_experiments(db: Session = Depends(get_db)):
     experiments = db.query(ExperimentDB).order_by(ExperimentDB.id.desc()).all()
